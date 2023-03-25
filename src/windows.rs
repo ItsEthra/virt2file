@@ -22,7 +22,7 @@ pub fn output(
 
     let output = sections
         .into_iter()
-        .zip(addresses.into_iter())
+        .zip(addresses.iter())
         .map(|(section, address)| {
             if reverse {
                 let offset_in_section = address - section.pointer_to_raw_data as usize;
