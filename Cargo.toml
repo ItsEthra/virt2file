@@ -1,7 +1,7 @@
 [package]
 name = "virt2file"
 description = "Tool for converting between virtual addresses and file offsets"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["ItsEthra"]
 license = "MIT"

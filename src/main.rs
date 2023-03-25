@@ -1,25 +1,22 @@
 use argh::FromArgs;
 use eyre::Result;
-use goblin::{pe::PE, Hint};
-use std::{fs, io::Cursor};
-
-mod windows;
+use std::fs;
 
 #[derive(Debug, FromArgs)]
 /// Convert from virtal address to file offset and back.
 struct Args {
     /// convert from file offset to virtual address instead.
     #[argh(switch, short = 'r')]
-    pub reverse: bool,
+    reverse: bool,
     /// binary file to work with.
     #[argh(option, short = 'f')]
-    pub file: String,
+    file: String,
     /// addresses to convert, accepts addresses like `0xAABB` `AABB`.
     #[argh(positional)]
-    pub addresses: Vec<String>,
+    addresses: Vec<String>,
     /// changes base of the image.
     #[argh(option, short = 'b')]
-    pub base: Option<String>,
+    base: Option<String>,
 }
 
 fn main() -> Result<()> {
@@ -38,17 +35,9 @@ fn main() -> Result<()> {
             usize::from_str_radix(stipped, 16)
         })
         .transpose()?;
+    let file = fs::read(args.file)?;
 
-    let mut binary = Cursor::new(fs::read(&args.file)?);
-    let hint = goblin::peek(&mut binary)?;
-
-    let results = match hint {
-        Hint::PE => {
-            let pe = PE::parse(&binary.get_ref()[..])?;
-            windows::output(&pe, &addresses[..], args.reverse, base)?
-        }
-        _ => eyre::bail!("Unsupported file format, supported formats are: PE"),
-    };
+    let results = virt2file::convert(file, &addresses[..], args.reverse, base)?;
     results.into_iter().for_each(|addr| println!("{addr:#X}"));
 
     Ok(())
