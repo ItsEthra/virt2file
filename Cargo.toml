@@ -1,0 +1,12 @@
+[package]
+name = "virt2file"
+version = "0.1.0"
+edition = "2021"
+authors = ["ItsEthra"]
+license = "MIT"
+repository = "https://github.com/ItsEthra/virt2file"
+
+[dependencies]
+argh = "0.1.10"
+eyre = "0.6.8"
+goblin = "0.6.1"
